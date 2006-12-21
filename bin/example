@@ -1,0 +1,17 @@
+#!/usr/bin/perl -w
+
+=head1 NAME
+
+example - GD::Graph::Polar example
+
+=cut
+
+use strict;
+use blib;
+use GD::Graph::Polar;
+
+my $obj=GD::Graph::Polar->new(radius=>100);
+foreach (0..10) {
+  $obj->addPoint($_*10, 30);
+}
+print $obj->image;

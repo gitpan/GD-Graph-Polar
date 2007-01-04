@@ -1,6 +1,7 @@
-bin/example
+bin/example-plot.cgi
+bin/example-plot.pl
+bin/example-plot.png
 CHANGES
-doc/image.png
 lib/GD/Graph/Polar.pm
 LICENSE
 Makefile.PL

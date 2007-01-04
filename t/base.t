@@ -39,10 +39,21 @@ BEGIN {
     }
 }
 
-BEGIN { plan tests => 2 }
+BEGIN { plan tests => 8 }
 
 # just check that all modules can be compiled
 ok(eval {require GD::Graph::Polar; 1}, 1, $@);
 
-my $obj = GD::Graph::Polar->new();
+my $obj = GD::Graph::Polar->new(radius=>30,
+                                size=>40,
+                                border=>5);
 ok(ref $obj, "GD::Graph::Polar");
+
+ok($obj->_width, 30);
+ok($obj->_scale(15), 7.5);
+my($x,$y)=$obj->_imgxy_xy(5,7);
+ok($x,20);
+ok($y,8);
+($x,$y)=$obj->_xy_rt_rad(sqrt(5), atan2(1,2));
+ok($x=>2);
+ok($y=>1);

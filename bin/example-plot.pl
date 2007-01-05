@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-example - GD::Graph::Polar example
+example-plot.pl - GD::Graph::Polar example
 
 =cut
 

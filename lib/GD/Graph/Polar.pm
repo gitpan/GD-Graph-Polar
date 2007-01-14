@@ -12,7 +12,9 @@ GD::Graph::Polar - Make polar graph using GD package
   $obj->addPoint_rad    (50=>3.1415);
   $obj->addGeoPoint     (75=>25);
   $obj->addGeoPoint_rad (75=>3.1415);
-  #$obj->addLine($r0=>$t0, $r1=>$t1, $r2=>$t2, ...); #TODO
+  $obj->addLine($r0=>$t0, $r1=>$t1);
+  $obj->addGeoLine($r0=>$t0, $r1=>$t1);
+  $obj->addGeoArc($r0=>$t0, $r1=>$t1);
   print $obj->draw;
 
 =head1 DESCRIPTION
@@ -25,7 +27,7 @@ use Geo::Constants qw{PI};
 use Geo::Functions qw{rad_deg deg_rad};
 use GD;
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.04} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.05} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 
@@ -191,6 +193,44 @@ sub addLine_rad {
   my $t0=shift();
   my $r1=shift();
   my $t1=shift();
+  my ($x0=>$y0)=$self->_imgxy_rt_rad($r0=>$t0);
+  my ($x1=>$y1)=$self->_imgxy_rt_rad($r1=>$t1);
+  $self->{'object'}->line($x0, $y0, $x1, $y1, $self->{'color'}->{'black'});
+}
+
+=head2 addGeoLine
+
+Method to add a line to the graph.
+
+  $obj->addGeoLine(50=>25, 75=>35);
+
+=cut
+
+sub addGeoLine {
+  my $self = shift();
+  my $r0=shift();
+  my $t0=rad_deg(shift());
+  my $r1=shift();
+  my $t1=rad_deg(shift());
+  return $self->addGeoLine_rad($r0=>$t0, $r1=>$t1);
+}
+
+=head2 addGeoLine_rad
+
+Method to add a line to the graph.
+
+  $obj->addGeoLine_rad(50=>3.14, 75=>3.45);
+
+=cut
+
+sub addGeoLine_rad {
+  my $self = shift();
+  my $r0=shift();
+  my $t0=shift();
+  my $r1=shift();
+  my $t1=shift();
+  $t0=PI()/2-$t0;
+  $t1=PI()/2-$t1;
   my ($x0=>$y0)=$self->_imgxy_rt_rad($r0=>$t0);
   my ($x1=>$y1)=$self->_imgxy_rt_rad($r1=>$t1);
   $self->{'object'}->line($x0, $y0, $x1, $y1, $self->{'color'}->{'black'});

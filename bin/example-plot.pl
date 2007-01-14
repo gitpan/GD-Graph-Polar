@@ -4,6 +4,14 @@
 
 example-plot.pl - GD::Graph::Polar example
 
+=head1 SAMPLE OUTPUT
+
+=begin html
+
+<img src="http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.04/bin/example-plot.png" />
+
+=end html  
+
 =cut
 
 use strict;
@@ -19,6 +27,7 @@ foreach (1..10) {
   $obj->addPoint($r0=>$t0);
   $obj->addPoint($r1=>$t1);
   $obj->addLine($r0=>$t0, $r1=>$t1);
+  $obj->addArc($r0=>$t0, $r1=>$t1);
 }
 open(IMG, ">example-plot.png");
 print IMG $obj->draw;

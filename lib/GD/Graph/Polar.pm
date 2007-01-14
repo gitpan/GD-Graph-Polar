@@ -25,7 +25,7 @@ use Geo::Constants qw{PI};
 use Geo::Functions qw{rad_deg deg_rad};
 use GD;
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.03} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.04} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 
@@ -196,54 +196,50 @@ sub addLine_rad {
   $self->{'object'}->line($x0, $y0, $x1, $y1, $self->{'color'}->{'black'});
 }
 
-#=head2 addCordArc
-#
-#Method to add an arc to the graph.
-#
-#  $obj->addCordArc(50=>25, 75=>35);
-#
-#=cut
-#
-#sub addCordArc {
-#  my $self = shift();
-#  my $r0=shift();
-#  my $t0=rad_deg(shift());
-#  my $r1=shift();
-#  my $t1=rad_deg(shift());
-#  return $self->addCordArc_rad($r0=>$t0, $r1=>$t1);
-#}
-#
-#=head2 addCordArc_rad
-#
-#Method to add a point to the graph.
-#
-#  $obj->addCordArc_rad(50=>3.14, 75=>3.45);
-#
-#=cut
-#
-#sub addCordArc_rad {
-#  my $self = shift();
-#  my $r0=shift();
-#  my $t0=shift();
-#  my $r1=shift();
-#  my $t1=shift();
-#  my ($x0=>$y0)=$self->_xy_rt_rad($r0=>$t0);
-#  my ($x1=>$y1)=$self->_xy_rt_rad($r1=>$t1);
-#  my $a=atan2($y1-$y0, $x1-$x0);
-#  my $c=sqrt(($y1-$y0)**2 + ($x1-$x0)**2);
-#  my $b=$a-rad_deg(30);
-#  my $dx=$c*sin($b);
-#  my $dy=$c*cos($b);
-#  my ($cx=>$cy)=$self->_imgxy_xy($x0-$dx, $y0+$dy);
-#  #$c=$self->_scale($c)*2;
-#  $c*=2;
-#  my $a1=deg_rad(atan2($y1-$cy, $x1-$cx));
-#  my $a0=$a1+60;
-#  $a0+=360 if $a0 < 0;
-#  $a1+=360 if $a1 < 0;
-#  warn("a0: $a0\ta1: $a1\n");
-#  $self->{'object'}->arc($cx,$cy,$c,$c,$a1,360,$self->{'color'}->{'black'});
-#}
+=head2 addArc
+
+Method to add an arc to the graph.
+
+  $obj->addArc(50=>25, 75=>35);
+
+=cut
+
+sub addArc {
+  my $self = shift();
+  my $r0=shift();
+  my $t0=rad_deg(shift());
+  my $r1=shift();
+  my $t1=rad_deg(shift());
+  return $self->addArc_rad($r0=>$t0, $r1=>$t1);
+}
+
+=head2 addArc_rad
+
+Method to add an arc to the graph.
+
+  $obj->addArc_rad(50=>3.14, 75=>3.45);
+
+=cut
+
+sub addArc_rad {
+  my $self = shift();
+  my $r0=shift();
+  my $t0=shift();
+  my $r1=shift();
+  my $t1=shift();
+  my $m=($r1-$r0) / ($t1-$t0);
+  my $inc=0.02; #is this good?
+  my $steps=int(($t1-$t0) / $inc);
+  my @array=();
+  foreach (0..$steps) {
+    my $t=$_ / $steps * ($t1-$t0) + $t0;
+    my $r=$r0 + $m * ($t-$t0);
+    push @array, [$r=>$t];
+  } 
+  foreach (1..$steps) {
+    $self->addLine_rad(@{$array[$_-1]}, @{$array[$_]});
+  }
+}
 
 =head2 draw
 

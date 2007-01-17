@@ -27,7 +27,7 @@ use Geo::Constants qw{PI};
 use Geo::Functions qw{rad_deg deg_rad};
 use GD;
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.05} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.06} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 

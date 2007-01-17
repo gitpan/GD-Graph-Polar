@@ -6,11 +6,7 @@ example-plot.pl - GD::Graph::Polar example
 
 =head1 SAMPLE OUTPUT
 
-=begin html
-
-<img src="http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.04/bin/example-plot.png" />
-
-=end html
+L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.04/bin/example-plot.png>
 
 =cut
 

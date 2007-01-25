@@ -13,10 +13,18 @@ GD::Graph::Polar - Make polar graph using GD package
   $obj->addGeoPoint     (75=>25);
   $obj->addGeoPoint_rad (75=>3.1415);
   $obj->addLine($r0=>$t0, $r1=>$t1);
+  $obj->addLine_rad($r0=>$t0, $r1=>$t1);
   $obj->addGeoLine($r0=>$t0, $r1=>$t1);
+  $obj->addGeoLine_rad($r0=>$t0, $r1=>$t1);
+  $obj->addArc($r0=>$t0, $r1=>$t1);
+  $obj->addArc_rad($r0=>$t0, $r1=>$t1);
   $obj->addGeoArc($r0=>$t0, $r1=>$t1);
+  $obj->addGeoArc_rad($r0=>$t0, $r1=>$t1);
   $obj->addString($r=>$t, "Hello World!");
-  $obj->font(gdSmallFont);  #sets the current font from GD
+  $obj->addString_rad($r=>$t, "Hello World!");
+  $obj->addGeoString($r=>$t, "Hello World!");
+  $obj->addGeoString_rad($r=>$t, "Hello World!");
+  $obj->font(gdSmallFont);  #sets the current font from GD exports
   $obj->color("blue");      #sets the current color from Graphics::ColorNames
   print $obj->draw;
 
@@ -31,7 +39,7 @@ use Geo::Functions qw{rad_deg deg_rad};
 use GD;
 use Graphics::ColorNames;
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.07} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.08} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 
@@ -131,7 +139,7 @@ sub addPoint_rad {
   my $t=shift();
   my ($x, $y)=$self->_imgxy_rt_rad($r,$t);
   my $icon=7;
-  $self->{'object'}->arc($x,$y,$icon,$icon,0,360,$self->color);
+  return $self->{'object'}->arc($x,$y,$icon,$icon,0,360,$self->color);
 }
 
 =head2 addGeoPoint
@@ -160,8 +168,7 @@ Method to add a point to the graph.
 sub addGeoPoint_rad {
   my $self = shift();
   my $r=shift();
-  my $t=shift();
-  $t=PI()/2-$t;
+  my $t=PI()/2-shift();
   return $self->addPoint_rad($r,$t);
 }
 
@@ -198,7 +205,7 @@ sub addLine_rad {
   my $t1=shift();
   my ($x0=>$y0)=$self->_imgxy_rt_rad($r0=>$t0);
   my ($x1=>$y1)=$self->_imgxy_rt_rad($r1=>$t1);
-  $self->{'object'}->line($x0, $y0, $x1, $y1, $self->color);
+  return $self->{'object'}->line($x0, $y0, $x1, $y1, $self->color);
 }
 
 =head2 addGeoLine
@@ -229,14 +236,10 @@ Method to add a line to the graph.
 sub addGeoLine_rad {
   my $self = shift();
   my $r0=shift();
-  my $t0=shift();
+  my $t0=PI()/2-shift();
   my $r1=shift();
-  my $t1=shift();
-  $t0=PI()/2-$t0;
-  $t1=PI()/2-$t1;
-  my ($x0=>$y0)=$self->_imgxy_rt_rad($r0=>$t0);
-  my ($x1=>$y1)=$self->_imgxy_rt_rad($r1=>$t1);
-  $self->{'object'}->line($x0, $y0, $x1, $y1, $self->color);
+  my $t1=PI()/2-shift();
+  return $self->addLine_rad($r0=>$t0, $r1=>$t1);
 }
 
 =head2 addArc
@@ -284,6 +287,40 @@ sub addArc_rad {
   }
 }
 
+=head2 addGeoArc
+
+Method to add an arc to the graph.
+
+  $obj->addGeoArc(50=>25, 75=>35);
+
+=cut
+
+sub addGeoArc {
+  my $self = shift();
+  my $r0=shift();
+  my $t0=rad_deg(shift());
+  my $r1=shift();
+  my $t1=rad_deg(shift());
+  return $self->addGeoArc_rad($r0=>$t0, $r1=>$t1);
+}
+
+=head2 addGeoArc_rad
+
+Method to add an arc to the graph.
+
+  $obj->addGeoArc_rad(50=>25, 75=>35);
+
+=cut
+
+sub addGeoArc_rad {
+  my $self = shift();
+  my $r0=shift();
+  my $t0=PI()/2-shift();
+  my $r1=shift();
+  my $t1=PI()/2-shift();
+  return $self->addArc_rad($r0=>$t0, $r1=>$t1);
+}
+
 =head2 addString
 
 Method to add a string to the graph.
@@ -311,6 +348,34 @@ sub addString_rad {
   my $string=shift();
   my ($x=>$y)=$self->_imgxy_rt_rad($r=>$t);
   $self->{'object'}->string($self->font, $x, $y, $string, $self->color);
+}
+
+=head2 addGeoString
+
+Method to add a string to the graph.
+
+=cut
+
+sub addGeoString {
+  my $self=shift();
+  my $r=shift();
+  my $t=deg_rad(shift());
+  my $string=shift();
+  $self->addGeoString_rad($r=>$t, $string);
+}
+
+=head2 addGeoString_rad
+
+Method to add a string to the graph.
+
+=cut
+
+sub addGeoString_rad {
+  my $self=shift();
+  my $r=shift();
+  my $t=PI()/2-shift();
+  my $string=shift();
+  $self->addString_rad($r=>$t, $string);
 }
 
 =head2 color

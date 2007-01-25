@@ -8,6 +8,7 @@ WriteMakefile(
                  GD                => 0,
                  Geo::Constants    => 0.04,
                  Geo::Functions    => 0.03,
+                 Graphics::ColorNames => 0,
                },
                ($] >= 5.005 ? 
                  (

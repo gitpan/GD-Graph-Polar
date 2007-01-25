@@ -1,6 +1,8 @@
 bin/example-plot.cgi
 bin/example-plot.pl
 bin/example-plot.png
+bin/example-text.pl
+bin/example-text.png
 CHANGES
 lib/GD/Graph/Polar.pm
 LICENSE

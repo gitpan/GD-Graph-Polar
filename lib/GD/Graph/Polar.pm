@@ -15,6 +15,9 @@ GD::Graph::Polar - Make polar graph using GD package
   $obj->addLine($r0=>$t0, $r1=>$t1);
   $obj->addGeoLine($r0=>$t0, $r1=>$t1);
   $obj->addGeoArc($r0=>$t0, $r1=>$t1);
+  $obj->addString($r=>$t, "Hello World!");
+  $obj->font(gdSmallFont);  #sets the current font from GD
+  $obj->color("blue");      #sets the current color from Graphics::ColorNames
   print $obj->draw;
 
 =head1 DESCRIPTION
@@ -26,8 +29,9 @@ use vars qw($VERSION);
 use Geo::Constants qw{PI};
 use Geo::Functions qw{rad_deg deg_rad};
 use GD;
+use Graphics::ColorNames;
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.06} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.07} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 
@@ -40,6 +44,7 @@ The new() constructor.
                                   radius=>1,     #scale of the radius
                                   ticks=>10,     #number of major ticks
                                   border=>2,     #pixel border around graph
+                                  rgbfile=>"/usr/X11R6/lib/X11/rgb.txt"
                                  );
 
 =cut
@@ -64,39 +69,37 @@ sub initialize {
   $self->{'radius'}=$param->{'radius'} || 1;
   $self->{'ticks'} =$param->{'ticks'}  || 10;
   $self->{'border'}=$param->{'border'} || 2;
+  $self->{'rgbfile'}=$param->{'rgbfile'} || '/usr/X11R6/lib/X11/rgb.txt';
+  die('Error: Cannot read '. $self->{'rgbfile'}) unless -r $self->{'rgbfile'};
   $self->{'object'}=GD::Image->new($self->{'size'}, $self->{'size'});
-  my $color={white=>[255,255,255],
-              gray=>[192,192,192],
-              black=>[0,0,0],
-              red=>[255,0,0],
-              blue=>[0,0,255]};
-  $self->{'color'}={};
-  foreach (keys %$color) {
-    $self->{'color'}->{$_}=$self->{'object'}->colorAllocate(@{$color->{$_}}); 
-  }
+  $self->{'ColorNames'}=Graphics::ColorNames->new($self->{'rgbfile'});
+
   # make the background transparent and interlaced
-  $self->{'object'}->transparent($self->{'color'}->{'white'});
+  $self->{'object'}->transparent($self->color("white"));
   $self->{'object'}->interlaced('true');
   
   # Put a frame around the picture
-  $self->{'object'}->rectangle(0,0,$self->{'size'}-1,$self->{'size'}-1,$self->{'color'}->{'black'});
+  $self->{'object'}->rectangle(0,0,$self->{'size'}-1,$self->{'size'}-1,$self->color('black'));
 
+  $self->color('gray');
   foreach (0..$self->{'ticks'}) {
     my $c=$self->{'size'} / 2;
     my $r=$self->_width * $_ / $self->{'ticks'};
-    $self->{'object'}->arc($c,$c,$r,$r,0,360,$self->{'color'}->{'gray'});
+    $self->{'object'}->arc($c,$c,$r,$r,0,360,$self->color);
   }
 
   $self->{'object'}->line($self->{'size'}/2,
                           $self->{'border'},
                           $self->{'size'}/2,
                           $self->{'size'}-$self->{'border'},
-                          $self->{'color'}->{'gray'});
+                          $self->color);
   $self->{'object'}->line($self->{'border'},
                           $self->{'size'}/2,
                           $self->{'size'}-$self->{'border'},
                           $self->{'size'}/2,
-                          $self->{'color'}->{'gray'});
+                          $self->color);
+  $self->font(gdSmallFont);
+  $self->color('black');
 }
 
 =head2 addPoint
@@ -128,7 +131,7 @@ sub addPoint_rad {
   my $t=shift();
   my ($x, $y)=$self->_imgxy_rt_rad($r,$t);
   my $icon=7;
-  $self->{'object'}->arc($x,$y,$icon,$icon,0,360,$self->{'color'}->{'black'});
+  $self->{'object'}->arc($x,$y,$icon,$icon,0,360,$self->color);
 }
 
 =head2 addGeoPoint
@@ -195,7 +198,7 @@ sub addLine_rad {
   my $t1=shift();
   my ($x0=>$y0)=$self->_imgxy_rt_rad($r0=>$t0);
   my ($x1=>$y1)=$self->_imgxy_rt_rad($r1=>$t1);
-  $self->{'object'}->line($x0, $y0, $x1, $y1, $self->{'color'}->{'black'});
+  $self->{'object'}->line($x0, $y0, $x1, $y1, $self->color);
 }
 
 =head2 addGeoLine
@@ -233,7 +236,7 @@ sub addGeoLine_rad {
   $t1=PI()/2-$t1;
   my ($x0=>$y0)=$self->_imgxy_rt_rad($r0=>$t0);
   my ($x1=>$y1)=$self->_imgxy_rt_rad($r1=>$t1);
-  $self->{'object'}->line($x0, $y0, $x1, $y1, $self->{'color'}->{'black'});
+  $self->{'object'}->line($x0, $y0, $x1, $y1, $self->color);
 }
 
 =head2 addArc
@@ -279,6 +282,72 @@ sub addArc_rad {
   foreach (1..$steps) {
     $self->addLine_rad(@{$array[$_-1]}, @{$array[$_]});
   }
+}
+
+=head2 addString
+
+Method to add a string to the graph.
+
+=cut
+
+sub addString {
+  my $self=shift();
+  my $r=shift();
+  my $t=rad_deg(shift());
+  my $string=shift();
+  $self->addString_rad($r=>$t, $string);
+}
+
+=head2 addString_rad
+
+Method to add a string to the graph.
+
+=cut
+
+sub addString_rad {
+  my $self=shift();
+  my $r=shift();
+  my $t=shift();
+  my $string=shift();
+  my ($x=>$y)=$self->_imgxy_rt_rad($r=>$t);
+  $self->{'object'}->string($self->font, $x, $y, $string, $self->color);
+}
+
+=head2 color
+
+Method to set or return the current drawing color
+
+  my $colorobj=$obj->color("blue");
+  my $colorobj=$obj->color;
+
+=cut
+
+sub color {
+  my $self = shift();
+  if (@_) {
+    my $color=shift();
+    $self->{'color'}=
+        $self->{'object'}->colorAllocate($self->{'ColorNames'}->rgb($color))
+          || $self->{'object'}->colorAllocate(0,0,0); 
+  }
+  return $self->{'color'};
+}
+
+=head2 font
+
+Method to set or return the current drawing font (only needed by the very few)
+
+  $obj->font(gdSmallFont); # You will need to import these from GD if you want
+                           # to use them gdGiantFont, gdLargeFont,
+                           # gdMediumBoldFont, gdSmallFont and gdTinyFont.
+  $obj->font;  #use the default...
+
+=cut
+
+sub font {
+  my $self = shift();
+  if (@_) { $self->{'font'} = shift() } #sets value
+  return $self->{'font'};
 }
 
 =head2 draw
@@ -376,8 +445,6 @@ Please send to the geo-perl email list.
 
 =head1 LIMITS
 
-addLine method is linear with respect to the XY space.  It is not linear with respace to radius-theta space.
-
 =head1 AUTHOR
 
 Michael R. Davis qw/perl michaelrdavis com/
@@ -390,6 +457,6 @@ This library is free software; you can redistribute it and/or modify it under th
 
 =head1 SEE ALSO
 
-GD
-Geo::Constants
-Geo::Functions
+L<GD>
+L<Geo::Constants>
+L<Geo::Functions>

@@ -35,11 +35,11 @@ GD::Graph::Polar - Make polar graph using GD package
 use strict;
 use vars qw($VERSION);
 use Geo::Constants qw{PI};
-use Geo::Functions qw{rad_deg deg_rad};
+use Geo::Functions qw{rad_deg};
 use GD;
 use Graphics::ColorNames;
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.08} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.09} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 
@@ -87,7 +87,7 @@ sub initialize {
   $self->{'object'}->interlaced('true');
   
   # Put a frame around the picture
-  $self->{'object'}->rectangle(0,0,$self->{'size'}-1,$self->{'size'}-1,$self->color('black'));
+  $self->{'object'}->rectangle(0, 0, $self->{'size'}-1, $self->{'size'}-1, $self->color('black'));
 
   $self->color('gray');
   foreach (0..$self->{'ticks'}) {
@@ -282,9 +282,11 @@ sub addArc_rad {
     my $r=$r0 + $m * ($t-$t0);
     push @array, [$r=>$t];
   } 
+  my @return=();
   foreach (1..$steps) {
-    $self->addLine_rad(@{$array[$_-1]}, @{$array[$_]});
+    push @return, $self->addLine_rad(@{$array[$_-1]}, @{$array[$_]});
   }
+  return \@return;
 }
 
 =head2 addGeoArc
@@ -332,7 +334,7 @@ sub addString {
   my $r=shift();
   my $t=rad_deg(shift());
   my $string=shift();
-  $self->addString_rad($r=>$t, $string);
+  return $self->addString_rad($r=>$t, $string);
 }
 
 =head2 addString_rad
@@ -347,7 +349,7 @@ sub addString_rad {
   my $t=shift();
   my $string=shift();
   my ($x=>$y)=$self->_imgxy_rt_rad($r=>$t);
-  $self->{'object'}->string($self->font, $x, $y, $string, $self->color);
+  return $self->{'object'}->string($self->font, $x, $y, $string, $self->color);
 }
 
 =head2 addGeoString
@@ -359,9 +361,9 @@ Method to add a string to the graph.
 sub addGeoString {
   my $self=shift();
   my $r=shift();
-  my $t=deg_rad(shift());
+  my $t=rad_deg(shift());
   my $string=shift();
-  $self->addGeoString_rad($r=>$t, $string);
+  return $self->addGeoString_rad($r=>$t, $string);
 }
 
 =head2 addGeoString_rad
@@ -375,7 +377,7 @@ sub addGeoString_rad {
   my $r=shift();
   my $t=PI()/2-shift();
   my $string=shift();
-  $self->addString_rad($r=>$t, $string);
+  return $self->addString_rad($r=>$t, $string);
 }
 
 =head2 color
@@ -436,7 +438,7 @@ sub draw {
 
 sub _scale {
   my $self=shift();
-  my $r=shift()||1;
+  my $r=shift();
   return $self->_width / 2 / $self->{'radius'} * $r;
 }
 
@@ -464,8 +466,8 @@ sub _imgxy_xy {
   my $x=shift();
   my $y=shift();
   my $sz=$self->_width;
-  $x=$sz/2 + $x;
-  $y=$sz/2 - $y;
+  $x=$sz/2 + $x + $self->{'border'};
+  $y=$sz/2 - $y + $self->{'border'};
   return ($x, $y);
 }
 
@@ -476,11 +478,11 @@ sub _imgxy_xy {
 #=cut
 
 sub _xy_rt_rad {
-  my $self = shift();
+  my $self=shift();
   my $r=shift();
   my $t=shift();
-  my $x=$r * cos($t);
-  my $y=$r * sin($t);
+  my $x=$r*cos($t);
+  my $y=$r*sin($t);
   return ($x, $y);
 }
 

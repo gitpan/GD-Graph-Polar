@@ -39,7 +39,7 @@ use Geo::Functions qw{rad_deg};
 use GD;
 use Graphics::ColorNames;
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.09} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.10} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 
@@ -73,10 +73,10 @@ sub new {
 sub initialize {
   my $self = shift();
   my $param = {@_};
-  $self->{'size'}  =$param->{'size'}   || 480;
+  $self->{'size'}=$param->{'size'} || 480;
   $self->{'radius'}=$param->{'radius'} || 1;
-  $self->{'ticks'} =$param->{'ticks'}  || 10;
-  $self->{'border'}=$param->{'border'} || 2;
+  $self->{'ticks'}=defined($param->{'ticks'}) ? $param->{'ticks'} : 10;
+  $self->{'border'}=defined($param->{'border'}) ? $param->{'border'} : 2;
   $self->{'rgbfile'}=$param->{'rgbfile'} || '/usr/X11R6/lib/X11/rgb.txt';
   die('Error: Cannot read '. $self->{'rgbfile'}) unless -r $self->{'rgbfile'};
   $self->{'object'}=GD::Image->new($self->{'size'}, $self->{'size'});
@@ -90,10 +90,12 @@ sub initialize {
   $self->{'object'}->rectangle(0, 0, $self->{'size'}-1, $self->{'size'}-1, $self->color('black'));
 
   $self->color('gray');
-  foreach (0..$self->{'ticks'}) {
-    my $c=$self->{'size'} / 2;
-    my $r=$self->_width * $_ / $self->{'ticks'};
-    $self->{'object'}->arc($c,$c,$r,$r,0,360,$self->color);
+  if ($self->{'ticks'} > 0) {
+    foreach (0..$self->{'ticks'}) {
+      my $c=$self->{'size'} / 2;
+      my $r=$self->_width * $_ / $self->{'ticks'};
+      $self->{'object'}->arc($c,$c,$r,$r,0,360,$self->color);
+    }
   }
 
   $self->{'object'}->line($self->{'size'}/2,

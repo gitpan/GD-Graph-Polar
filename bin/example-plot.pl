@@ -14,7 +14,7 @@ use strict;
 use lib qw{./lib ../lib};
 use GD::Graph::Polar;
 
-my $obj=GD::Graph::Polar->new(size=>450, radius=>10);
+my $obj=GD::Graph::Polar->new(size=>450, radius=>10, border=>3, ticks=>20);
 foreach (1..10) {
   my $r0=$_;
   my $t0=-($_*3+5);

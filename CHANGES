@@ -1,3 +1,5 @@
+2006-02-01 v0.10
+  * Parameters ticks and border can now be 0
 2006-01-25 v0.09
   * Corrected Error in _scale method
   * Corrected Error in _imgxy_xy method

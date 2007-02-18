@@ -39,7 +39,7 @@ use Geo::Functions qw{rad_deg};
 use GD;
 use Graphics::ColorNames;
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.10} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.11} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 
@@ -77,8 +77,18 @@ sub initialize {
   $self->{'radius'}=$param->{'radius'} || 1;
   $self->{'ticks'}=defined($param->{'ticks'}) ? $param->{'ticks'} : 10;
   $self->{'border'}=defined($param->{'border'}) ? $param->{'border'} : 2;
-  $self->{'rgbfile'}=$param->{'rgbfile'} || '/usr/X11R6/lib/X11/rgb.txt';
-  die('Error: Cannot read '. $self->{'rgbfile'}) unless -r $self->{'rgbfile'};
+  my $rgb;
+  foreach (qw{
+               /usr/share/X11/rgb.txt
+               /usr/X11R6/lib/X11/rgb.txt
+               /etc/X11/rgb.txt
+               ./rgb.txt
+               ../rgb.txt
+             }) {
+    $rgb=$_ if -r;
+  }
+  $self->{'rgbfile'}=$param->{'rgbfile'} || $rgb;
+  die('Error: Cannot read rbg.txt file "'. $self->{'rgbfile'}. '"') unless -r $self->{'rgbfile'};
   $self->{'object'}=GD::Image->new($self->{'size'}, $self->{'size'});
   $self->{'ColorNames'}=Graphics::ColorNames->new($self->{'rgbfile'});
 

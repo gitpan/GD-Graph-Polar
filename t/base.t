@@ -46,7 +46,8 @@ ok(eval {require GD::Graph::Polar; 1}, 1, $@);
 
 my $obj = GD::Graph::Polar->new(radius=>30,
                                 size=>40,
-                                border=>5);
+                                border=>5,
+                                rgbfile=>"./rgb.txt");  #no standard location
 ok(ref $obj, "GD::Graph::Polar");
 
 ok($obj->_width, 30);

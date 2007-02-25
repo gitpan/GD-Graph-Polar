@@ -13,21 +13,6 @@ base.t - Good examples concerning how to use this module
 =cut
 
 use strict;
-use lib q{lib};
-use lib q{../lib};
-use constant NEAR_DEFAULT => 7;
-
-sub near {
-  my $x=shift();
-  my $y=shift();
-  my $p=shift()||NEAR_DEFAULT;
-  if (($x-$y)/$y < 10**-$p) {
-    return 1;
-  } else {
-    return 0;
-  }
-}
-
 
 BEGIN {
     if (!eval q{
@@ -39,10 +24,10 @@ BEGIN {
     }
 }
 
-BEGIN { plan tests => 8 }
+BEGIN { plan tests => 9 }
 
-# just check that all modules can be compiled
-ok(eval {require GD::Graph::Polar; 1}, 1, $@);
+use lib qw{./blib/lib};
+use GD::Graph::Polar;
 
 my $obj = GD::Graph::Polar->new(radius=>30,
                                 size=>40,
@@ -58,3 +43,8 @@ ok($y,13);
 ($x,$y)=$obj->_xy_rt_rad(sqrt(5), atan2(1,2));
 ok($x=>2);
 ok($y=>1);
+ok($obj->color([1,2,3]));
+my $skip = 0;
+eval q{use Graphics::ColorNames};
+$skip = 1 if $@;
+skip($skip, sub{$obj->color("blue")});

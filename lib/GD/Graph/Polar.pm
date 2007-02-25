@@ -26,6 +26,7 @@ GD::Graph::Polar - Make polar graph using GD package
   $obj->addGeoString_rad($r=>$t, "Hello World!");
   $obj->font(gdSmallFont);  #sets the current font from GD exports
   $obj->color("blue");      #sets the current color from Graphics::ColorNames
+  $obj->color([0,0,0]);     #sets the current color [red,green,blue]
   print $obj->draw;
 
 =head1 DESCRIPTION
@@ -36,10 +37,9 @@ use strict;
 use vars qw($VERSION);
 use Geo::Constants qw{PI};
 use Geo::Functions qw{rad_deg};
-use GD;
-use Graphics::ColorNames;
+use GD qw{gdSmallFont};
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.11} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.12} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 
@@ -77,29 +77,32 @@ sub initialize {
   $self->{'radius'}=$param->{'radius'} || 1;
   $self->{'ticks'}=defined($param->{'ticks'}) ? $param->{'ticks'} : 10;
   $self->{'border'}=defined($param->{'border'}) ? $param->{'border'} : 2;
-  my $rgb;
-  foreach (qw{
-               /usr/share/X11/rgb.txt
-               /usr/X11R6/lib/X11/rgb.txt
-               /etc/X11/rgb.txt
-               ./rgb.txt
-               ../rgb.txt
-             }) {
-    $rgb=$_ if -r;
-  }
-  $self->{'rgbfile'}=$param->{'rgbfile'} || $rgb;
-  die('Error: Cannot read rbg.txt file "'. $self->{'rgbfile'}. '"') unless -r $self->{'rgbfile'};
   $self->{'object'}=GD::Image->new($self->{'size'}, $self->{'size'});
-  $self->{'ColorNames'}=Graphics::ColorNames->new($self->{'rgbfile'});
+  eval 'use Graphics::ColorNames';
+  unless($@) {
+    my $rgb;
+    foreach (qw{
+                 /usr/share/X11/rgb.txt
+                 /usr/X11R6/lib/X11/rgb.txt
+                 /etc/X11/rgb.txt
+                 ./rgb.txt
+                 ../rgb.txt
+               }) {
+      $rgb=$_ if -r;
+    }
+    $self->{'rgbfile'}=$param->{'rgbfile'} || $rgb;
+    die('Error: Cannot read rgb.txt file "'. $self->{'rgbfile'}. '"') unless -r $self->{'rgbfile'};
+    $self->{'ColorNames'}=Graphics::ColorNames->new($self->{'rgbfile'});
+  }
 
   # make the background transparent and interlaced
-  $self->{'object'}->transparent($self->color("white"));
+  $self->{'object'}->transparent($self->color([255,255,255]));
   $self->{'object'}->interlaced('true');
   
   # Put a frame around the picture
-  $self->{'object'}->rectangle(0, 0, $self->{'size'}-1, $self->{'size'}-1, $self->color('black'));
+  $self->{'object'}->rectangle(0, 0, $self->{'size'}-1, $self->{'size'}-1, $self->color([0,0,0]));
 
-  $self->color('gray');
+  $self->color([192,192,192]);
   if ($self->{'ticks'} > 0) {
     foreach (0..$self->{'ticks'}) {
       my $c=$self->{'size'} / 2;
@@ -119,7 +122,7 @@ sub initialize {
                           $self->{'size'}/2,
                           $self->color);
   $self->font(gdSmallFont);
-  $self->color('black');
+  $self->color([0,0,0]);
 }
 
 =head2 addPoint
@@ -396,7 +399,8 @@ sub addGeoString_rad {
 
 Method to set or return the current drawing color
 
-  my $colorobj=$obj->color("blue");
+  my $colorobj=$obj->color("blue");     #if Graphics::ColorNames available
+  my $colorobj=$obj->color([77,82,68]); #rgb=>[decimal,decimal,decimal]
   my $colorobj=$obj->color;
 
 =cut
@@ -405,9 +409,13 @@ sub color {
   my $self = shift();
   if (@_) {
     my $color=shift();
-    $self->{'color'}=
+    if (ref($color) eq "ARRAY") {
+      $self->{'color'}=$self->{'object'}->colorAllocate(@{$color});
+    } else {
+      $self->{'color'}=
         $self->{'object'}->colorAllocate($self->{'ColorNames'}->rgb($color))
-          || $self->{'object'}->colorAllocate(0,0,0); 
+          || $self->{'object'}->colorAllocate(0,0,0);
+    }
   }
   return $self->{'color'};
 }
@@ -416,10 +424,9 @@ sub color {
 
 Method to set or return the current drawing font (only needed by the very few)
 
-  $obj->font(gdSmallFont); # You will need to import these from GD if you want
-                           # to use them gdGiantFont, gdLargeFont,
-                           # gdMediumBoldFont, gdSmallFont and gdTinyFont.
-  $obj->font;  #use the default...
+  use GD qw(gdGiantFont gdLargeFont gdMediumBoldFont gdSmallFont gdTinyFont);
+  $obj->font(gdSmallFont); #the default
+  $obj->font;
 
 =cut
 

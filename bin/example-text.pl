@@ -13,6 +13,8 @@ L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.11/bin/example-text.png>
 use strict;
 use lib qw{./lib ../lib};
 use GD::Graph::Polar;
+eval q{Graphics::ColorNames};
+#die("Error: This script requires Graphics::ColorNames") if $@;
 
 my $obj=GD::Graph::Polar->new(size=>450, radius=>10);
 $obj->addString(88=>$_, $_) foreach (0,90,180,270);

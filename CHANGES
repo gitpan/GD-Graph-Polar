@@ -1,3 +1,5 @@
+2006-02-25 v0.13
+  * Fixed calls using named colors to the color method failing
 2006-02-25 v0.12
   * Graphics::ColorNames is now optional e.g. black=>[0,0,0]
 2006-02-17 v0.11

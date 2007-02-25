@@ -39,7 +39,7 @@ use Geo::Constants qw{PI};
 use Geo::Functions qw{rad_deg};
 use GD qw{gdSmallFont};
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.12} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.13} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 
@@ -412,9 +412,14 @@ sub color {
     if (ref($color) eq "ARRAY") {
       $self->{'color'}=$self->{'object'}->colorAllocate(@{$color});
     } else {
-      $self->{'color'}=
-        $self->{'object'}->colorAllocate($self->{'ColorNames'}->rgb($color))
-          || $self->{'object'}->colorAllocate(0,0,0);
+      if (defined($self->{'ColorNames'})) {
+        $self->{'color'}=
+          $self->{'object'}->colorAllocate($self->{'ColorNames'}->rgb($color))
+            || $self->{'object'}->colorAllocate(0,0,0);
+      } else {
+        warn(qq{Warning: Graphics::ColorNames unavailable. Unknown color($color); Using [0,0,0] (black).\n});
+        $self->{'color'}=$self->{'object'}->colorAllocate(0,0,0);
+      }
     }
   }
   return $self->{'color'};

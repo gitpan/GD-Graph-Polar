@@ -6,7 +6,7 @@ example-text.pl - GD::Graph::Polar example
 
 =head1 SAMPLE OUTPUT
 
-L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.11/bin/example-text.png>
+L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.14/bin/example-text.png>
 
 =cut
 

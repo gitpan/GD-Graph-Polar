@@ -1,7 +1,9 @@
+2006-03-13 v0.14
+  * Documentation
 2006-02-25 v0.13
   * Fixed calls using named colors to the color method failing
 2006-02-25 v0.12
-  * Graphics::ColorNames is now optional e.g. black=>[0,0,0]
+  * Graphics::ColorNames is optional e.g. black=>[0,0,0] or black=>"black"
 2006-02-17 v0.11
   * Modification to account for rbg.txt file is not in a standard location
 2006-02-01 v0.10

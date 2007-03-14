@@ -2,11 +2,11 @@
 
 =head1 NAME
 
-example-plot.pl - GD::Graph::Polar example
+example-plot.cgi - GD::Graph::Polar example
 
 =head1 SAMPLE OUTPUT
 
-L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.11/bin/example-plot.png>
+L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.14/bin/example-plot.png>
 
 =cut
 

@@ -39,7 +39,7 @@ use Geo::Constants qw{PI};
 use Geo::Functions qw{rad_deg};
 use GD qw{gdSmallFont};
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.13} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.14} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 

@@ -6,7 +6,7 @@ example-mrdvt92.pl - GD::Graph::Polar example
 
 =head1 SAMPLE OUTPUT
 
-L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.14/bin/example-plot.png>
+L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.14/bin/example-mrdvt92.png>
 
 =cut
 

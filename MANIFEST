@@ -1,18 +1,20 @@
-bin/example-locate.pl
-bin/example-locate.png
-bin/example-mrdvt92.pl
-bin/example-mrdvt92.png
-bin/example-plot.cgi
-bin/example-plot.pl
-bin/example-plot.png
-bin/example-text.pl
-bin/example-text.png
-CHANGES
+Changes
+Todo
 lib/GD/Graph/Polar.pm
 LICENSE
 Makefile.PL
-MANIFEST			This list of files
-META.yml
+MANIFEST
 README
 rgb.txt
-t/base.t
+t/001_base.t
+scripts/example-locate.pl
+scripts/example-locate.png
+scripts/example-mrdvt92.pl
+scripts/example-mrdvt92.png
+scripts/example-plot.cgi
+scripts/example-plot.pl
+scripts/example-plot.png
+scripts/example-text.pl
+scripts/example-text.png
+perl-GD-Graph-Polar.spec
+META.yml                                 Module meta-data (added by MakeMaker)

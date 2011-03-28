@@ -1,4 +1,11 @@
 package GD::Graph::Polar;
+use strict;
+use warnings;
+use Geo::Constants qw{PI};
+use Geo::Functions qw{rad_deg};
+use GD qw{gdSmallFont};
+
+our $VERSION="0.16";
 
 =head1 NAME
 
@@ -31,21 +38,13 @@ GD::Graph::Polar - Make polar graph using GD package
 
 =head1 DESCRIPTION
 
-=cut
-
-use strict;
-use vars qw($VERSION);
-use Geo::Constants qw{PI};
-use Geo::Functions qw{rad_deg};
-use GD qw{gdSmallFont};
-
-$VERSION = sprintf("%d.%02d", q{Revision: 0.15} =~ /(\d+)\.(\d+)/);
+This package is a wrapper arround GD to produce polar graphs with an easy interface.  I use this package to display GPS satellites on a graph with data from the L<Net::GPSD3> package.
 
 =head1 CONSTRUCTOR
 
 =head2 new
 
-The new() constructor. 
+The new constructor. 
 
   my $obj = GD::Graph::Polar->new(               #default values
                                   size=>480,     #width and height in pixels
@@ -67,6 +66,8 @@ sub new {
 }
 
 =head1 METHODS
+
+=head2 initialize
 
 =cut
 
@@ -524,17 +525,13 @@ sub _imgxy_rt_rad {
   return $self->_imgxy_xy($x, $y);
 }
 
-1;
-
-__END__
-
-=head1 TODO
-
 =head1 BUGS
 
-Please send to the geo-perl email list.
+Please log on RT and send to the author.
 
-=head1 LIMITS
+=head1 SUPPORT
+
+DavisNetworks.com supports all Perl applications including this package.
 
 =head1 AUTHOR
 
@@ -542,12 +539,14 @@ Michael R. Davis qw/perl michaelrdavis com/
 
 =head1 LICENSE
 
-Copyright (c) 2006 Michael R. Davis (mrdvt92)
+Copyright (c) 2011 Michael R. Davis (mrdvt92)
 
 This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-L<GD>
-L<Geo::Constants>
-L<Geo::Functions>
+L<GD>, L<Geo::Constants>, L<Geo::Functions>, L<Graphics::ColorNames>
+
+=cut
+
+1;

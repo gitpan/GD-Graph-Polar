@@ -1,4 +1,7 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
+use strict;
+use warnings;
+use GD::Graph::Polar;
 
 =head1 NAME
 
@@ -6,13 +9,9 @@ example-plot.cgi - GD::Graph::Polar example
 
 =head1 SAMPLE OUTPUT
 
-L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.14/bin/example-plot.png>
+L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.16/bin/example-plot.png>
 
 =cut
-
-use strict;
-use lib qw{./lib ../lib};
-use GD::Graph::Polar;
 
 my $obj=GD::Graph::Polar->new(size=>450, radius=>10, border=>3, ticks=>20);
 foreach (1..10) {

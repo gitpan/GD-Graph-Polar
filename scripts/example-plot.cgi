@@ -9,7 +9,7 @@ example-plot.cgi - GD::Graph::Polar example
 
 =head1 SAMPLE OUTPUT
 
-L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.16/bin/example-plot.png>
+L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.16/scripts/example-plot.png>
 
 =cut
 

@@ -9,7 +9,7 @@ example-locate.pl - GD::Graph::Polar example
 
 =head1 SAMPLE OUTPUT
 
-L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.16/bin/example-locate.png>
+L<http://search.cpan.org/src/MRDVT/GD-Graph-Polar-0.16/scripts/example-locate.png>
 
 =cut
 

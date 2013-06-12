@@ -1,8 +1,7 @@
 TODO list for Perl module GD::Graph::Polar
 
-  - Lazy load all of the stuff in the initialize method
   - Add support more point icon styles (currently only open 7 point circles)
     - Add solid circles
     - Add open/solid squares
-    - Add open/solid triagles
+    - Add open/solid triangles
     - Add open/solid stars

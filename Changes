@@ -1,6 +1,10 @@
 Changes for package GD-Graph-Polar
 
+0.17 2012-05-16
+  - Lazy load all of the stuff in the initialize method
+
 0.16 2011-03-27
+  - Added Todo
   - Added perl-GD-Graph-Polar.spec to distribution
   - Added Tests for kwalitee, changes, pods to svn not dist
   - Moved scripts from bin to scripts folder
